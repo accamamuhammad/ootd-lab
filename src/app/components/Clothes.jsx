@@ -248,7 +248,7 @@ const Clothes = () => {
       >
         <p
           onClick={() => setToggleOverlay(false)}
-          className="w-full text-right pt-4 pr-5 text-xl font-bold cursor-pointer bg-neutral-50 rounded-t-2xl text-black absolute -top-14 mb-5"
+          className="w-full text-right pb-3 pt-4 pr-5 text-xl font-bold cursor-pointer bg-neutral-50 rounded-t-2xl text-black absolute -top-14 mb-5"
         >
           X
         </p>
