@@ -28,6 +28,7 @@ const conditionColors: Record<Condition, string> = {
   Worn: "border-amber-400 bg-amber-50 text-amber-700",
 };
 
+
 export default function AddItem() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -68,7 +69,7 @@ export default function AddItem() {
 
     try {
       // 1. Upload image
-      const path = `${Date.now()}-${file.name}`;
+const path = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
       const { error: uploadError } = await supabase.storage
         .from("clothing-images")
         .upload(path, file);

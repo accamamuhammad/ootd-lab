@@ -55,7 +55,7 @@ const Item = () => {
   return (
     <div>
       {/* Filters */}
-      <div className="flex gap-2 overflow-x-auto py-3 scrollbar-hide">
+      <div className="flex gap-2 px-3.5 overflow-x-auto py-3 scrollbar-hide">
         {FILTERS.map((f) => (
           <button
             key={f}
@@ -72,7 +72,7 @@ const Item = () => {
       </div>
 
       {/* Header */}
-      <div className="mt-1 mb-3 flex items-center justify-between">
+      <div className="mt-2 mb-3 px-4 flex items-center justify-between">
         <p className="text-sm text-gray-400">
           {loading ? "Loading..." : `${filtered.length} items`}
         </p>
@@ -80,9 +80,12 @@ const Item = () => {
 
       {/* Grid */}
       {loading ? (
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid px-4 grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-56 animate-pulse rounded-xl bg-gray-100" />
+            <div
+              key={i}
+              className="h-56 animate-pulse rounded-xl bg-gray-100"
+            />
           ))}
         </div>
       ) : (
@@ -103,12 +106,16 @@ const Item = () => {
                 ) : (
                   <span className="text-4xl text-gray-200">👕</span>
                 )}
-                <span className={`absolute right-2.5 top-2.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium ${conditionStyles[item.condition]}`}>
+                <span
+                  className={`absolute right-2.5 top-2.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium ${conditionStyles[item.condition]}`}
+                >
                   {item.condition}
                 </span>
               </div>
               <div className="px-3 py-2.5">
-                <h2 className="text-sm font-medium text-gray-900">{item.name}</h2>
+                <h2 className="text-sm font-medium text-gray-900">
+                  {item.name}
+                </h2>
                 <span className="mt-1.5 inline-block rounded bg-gray-100 px-2 py-0.5 text-[11px] text-gray-500">
                   {item.style}
                 </span>
@@ -119,7 +126,9 @@ const Item = () => {
       )}
 
       {!loading && filtered.length === 0 && (
-        <p className="mt-12 text-center text-sm text-gray-400">No items match this filter.</p>
+        <p className="mt-12 text-center text-sm text-gray-400">
+          No items match this filter.
+        </p>
       )}
     </div>
   );
