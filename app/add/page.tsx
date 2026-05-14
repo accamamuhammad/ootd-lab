@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
+export const dynamic = "force-dynamic";
+
 type Condition = "New" | "Good" | "Worn";
 type Style = "Casual" | "Formal" | "Sport" | "Site";
 type Category = "tops" | "bottoms" | "shoes";
