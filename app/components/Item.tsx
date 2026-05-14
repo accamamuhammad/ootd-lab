@@ -1,33 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
-import Image, { StaticImageData } from "next/image";
-
-import trouser from "@/public/mock/trouser.png";
-import shirt from "@/public/mock/shirt.png";
-import shoe from "@/public/mock/shoe.png";
-import tShirt from "@/public/mock/t-shirt.png";
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import { supabase } from "@/lib/supabase";
 
 interface ClothingItem {
-  image: StaticImageData;
+  id: string;
   name: string;
   condition: "New" | "Good" | "Worn";
   style: "Casual" | "Formal" | "Sport" | "Site";
   category: "tops" | "bottoms" | "shoes";
+  image_url: string | null;
 }
 
-const FILTERS = [
-  "All",
-  "Tops",
-  "Bottoms",
-  "Shoes",
-  "Casual",
-  "Formal",
-  "Sport",
-  "New",
-  "Good",
-  "Worn",
-] as const;
+const FILTERS = ["All", "Tops", "Bottoms", "Shoes", "Casual", "Formal", "Sport", "New", "Good", "Worn"] as const;
 type Filter = (typeof FILTERS)[number];
 
 const conditionStyles: Record<ClothingItem["condition"], string> = {
@@ -38,37 +24,23 @@ const conditionStyles: Record<ClothingItem["condition"], string> = {
 
 const Item = () => {
   const [active, setActive] = useState<Filter>("All");
+  const [clothes, setClothes] = useState<ClothingItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const clothes: ClothingItem[] = [
-    {
-      image: shirt,
-      name: "Blue Shirt",
-      condition: "Good",
-      style: "Formal",
-      category: "tops",
-    },
-    {
-      image: tShirt,
-      name: "Black T-Shirt",
-      condition: "New",
-      style: "Casual",
-      category: "tops",
-    },
-    {
-      image: trouser,
-      name: "Cargo Pants",
-      condition: "New",
-      style: "Casual",
-      category: "bottoms",
-    },
-    {
-      image: shoe,
-      name: "Running Shoe",
-      condition: "New",
-      style: "Sport",
-      category: "shoes",
-    },
-  ];
+  useEffect(() => {
+    const fetchItems = async () => {
+      const { data, error } = await supabase
+        .from("clothing_items")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) console.error(error);
+      else setClothes(data ?? []);
+      setLoading(false);
+    };
+
+    fetchItems();
+  }, []);
 
   const filtered = clothes.filter((item) => {
     if (active === "All") return true;
@@ -81,7 +53,7 @@ const Item = () => {
   });
 
   return (
-    <div className="px-4">
+    <div>
       {/* Filters */}
       <div className="flex gap-2 overflow-x-auto py-3 scrollbar-hide">
         {FILTERS.map((f) => (
@@ -101,47 +73,53 @@ const Item = () => {
 
       {/* Header */}
       <div className="mt-1 mb-3 flex items-center justify-between">
-        <p className="text-sm text-gray-400">{filtered.length} items</p>
+        <p className="text-sm text-gray-400">
+          {loading ? "Loading..." : `${filtered.length} items`}
+        </p>
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {filtered.map((item, index) => (
-          <div
-            key={index}
-            className="group cursor-pointer overflow-hidden rounded-xl border border-gray-100 bg-white transition-transform hover:-translate-y-0.5 hover:border-gray-300"
-          >
-            {/* Image area */}
-            <div className="relative flex h-44 items-center justify-center bg-gray-50">
-              <Image
-                width={140}
-                height={140}
-                src={item.image}
-                alt={item.name}
-                className="object-contain"
-              />
-              <span
-                className={`absolute right-2.5 top-2.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium ${conditionStyles[item.condition]}`}
-              >
-                {item.condition}
-              </span>
+      {loading ? (
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-56 animate-pulse rounded-xl bg-gray-100" />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+          {filtered.map((item) => (
+            <div
+              key={item.id}
+              className="group cursor-pointer overflow-hidden rounded-xl border border-gray-100 bg-white transition-transform hover:-translate-y-0.5 hover:border-gray-300"
+            >
+              <div className="relative flex h-44 items-center justify-center bg-gray-50">
+                {item.image_url ? (
+                  <Image
+                    fill
+                    src={item.image_url}
+                    alt={item.name}
+                    className="object-contain p-4"
+                  />
+                ) : (
+                  <span className="text-4xl text-gray-200">👕</span>
+                )}
+                <span className={`absolute right-2.5 top-2.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium ${conditionStyles[item.condition]}`}>
+                  {item.condition}
+                </span>
+              </div>
+              <div className="px-3 py-2.5">
+                <h2 className="text-sm font-medium text-gray-900">{item.name}</h2>
+                <span className="mt-1.5 inline-block rounded bg-gray-100 px-2 py-0.5 text-[11px] text-gray-500">
+                  {item.style}
+                </span>
+              </div>
             </div>
+          ))}
+        </div>
+      )}
 
-            {/* Info */}
-            <div className="px-3 py-2.5">
-              <h2 className="text-sm font-medium text-gray-900">{item.name}</h2>
-              <span className="mt-1.5 inline-block rounded bg-gray-100 px-2 py-0.5 text-[11px] text-gray-500">
-                {item.style}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {filtered.length === 0 && (
-        <p className="mt-12 text-center text-sm text-gray-400">
-          No items match this filter.
-        </p>
+      {!loading && filtered.length === 0 && (
+        <p className="mt-12 text-center text-sm text-gray-400">No items match this filter.</p>
       )}
     </div>
   );
