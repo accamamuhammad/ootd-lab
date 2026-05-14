@@ -80,14 +80,20 @@ const path = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
         .getPublicUrl(path);
 
       // 2. Insert row
-      const { error: insertError } = await supabase.from("clothing_items").insert({
-        name: form.name.trim(),
-        condition: form.condition,
-        style: form.style,
-        category: form.category,
-        image_url: urlData.publicUrl,
-      });
-      if (insertError) throw insertError;
+const { data, error: insertError } = await supabase
+  .from("clothing_items")
+  .insert({
+    name: form.name.trim(),
+    condition: form.condition,
+    style: form.style,
+    category: form.category,
+    image_url: urlData.publicUrl,
+  })
+  .select();
+
+console.log("insert result:", data, insertError);
+
+if (insertError) throw insertError;
 
       router.push("/");
     } catch (err: unknown) {
