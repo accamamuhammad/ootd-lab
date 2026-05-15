@@ -80,7 +80,7 @@ const Item = () => {
 
       {/* Grid */}
       {loading ? (
-        <div className="grid px-4 grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
@@ -93,7 +93,7 @@ const Item = () => {
           {filtered.map((item) => (
             <div
               key={item.id}
-              className="group cursor-pointer overflow-hidden rounded-xl border border-gray-100 bg-white transition-transform hover:-translate-y-0.5 hover:border-gray-300"
+              className="mx-2 group cursor-pointer overflow-hidden rounded-xl border border-gray-100 bg-white transition-transform hover:-translate-y-0.5 hover:border-gray-300"
             >
               <div className="relative flex h-44 items-center justify-center bg-gray-50">
                 {item.image_url ? (
