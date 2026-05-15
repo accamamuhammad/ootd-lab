@@ -8,7 +8,7 @@ export default function Home() {
         <div className="px-4 mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-xl font-semibold text-gray-900">My Wardrobe</h1>
-            <p className="text-sm text-gray-400 mt-0.5">4 pieces</p>
+            <p className="text-sm text-gray-400 mt-0.5">Built by accama</p>
           </div>
           <Link
             href="/add"
